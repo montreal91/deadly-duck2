@@ -37,26 +37,17 @@
       <version>${kotlin.version}</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.jetbrains.kotlin</groupId>
+      <artifactId>kotlin-maven-allopen</artifactId>
+      <version>${kotlin.version}</version>
+    </dependency>
   </dependencies>
 
   <build>
     <sourceDirectory>${project.basedir}/src/main/kotlin</sourceDirectory>
-<!--    <testSourceDirectory>${project.basedir}/src/test/kotlin</testSourceDirectory>-->
     <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
       <plugins>
-        <plugin>
-          <groupId>org.jetbrains.kotlin</groupId>
-          <artifactId>kotlin-maven-plugin</artifactId>
-          <version>${kotlin.version}</version>
-          <executions>
-            <execution>
-              <id>compile</id>
-              <goals>
-                <goal>compile</goal>
-              </goals>
-            </execution>
-          </executions>
-        </plugin>
         <plugin>
           <artifactId>maven-clean-plugin</artifactId>
           <version>3.1.0</version>
@@ -117,6 +108,7 @@
         </executions>
         <configuration>
           <jvmTarget>1.8</jvmTarget>
+          <compilerPlugins>spring</compilerPlugins>
         </configuration>
       </plugin>
       <plugin>

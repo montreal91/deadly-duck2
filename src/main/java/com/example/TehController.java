@@ -18,4 +18,3 @@ public class TehController {
     return "Hello!";
   }
 }
-
