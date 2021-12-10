@@ -9,4 +9,8 @@ public class App {
     System.out.println("Hello World!");
     SpringApplication.run(App.class, args);
   }
+
+  void printHello() {
+    System.out.println("Hello from Java!");
+  }
 }
