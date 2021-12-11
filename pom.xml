@@ -6,7 +6,7 @@
 
   <groupId>com.example</groupId>
   <artifactId>deadly-duck</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <version>0.0-SNAPSHOT</version>
 
   <name>deadly-duck</name>
   <description>A simple deadly-duck.</description>
