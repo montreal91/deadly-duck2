@@ -18,7 +18,10 @@ public class GameService {
     this.gameRepository = gameRepository;
   }
 
-  public void createGame() {}
+  public void createGame(NewGameDto dto) {
+    Game game = Game.makeGameFromCreateGameDto(dto);
+    gameRepository.saveGame(game);
+  }
 
   public void loadGame(UUID gameUuid) {
     Optional<Game> game = gameRepository.getGameByUuid(gameUuid);
@@ -45,8 +48,8 @@ public class GameService {
     return activeGames.get(action.gameUuid).acceptAction(action);
   }
 
-  public List<Game> getGamesForOwner(User owner) {
-    return Collections.emptyList();
+  public List<Game> getGamesForOwner(String ownerHandle) {
+    return gameRepository.getAllGamesByOwner(ownerHandle);
   }
 
   public List<Game> getGamesForParticipant(User participant) {

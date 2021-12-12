@@ -3,8 +3,8 @@ package com.example.tennis.core;
 import com.example.user.core.User;
 import com.google.common.collect.ImmutableList;
 
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -15,11 +15,26 @@ public class Metadata {
   private User owner;
   private final String name;
   private final Map<String, User> participants = new HashMap<>();
-  private final List<Action> actions = new LinkedList<>();
   private boolean isDeleted = false;
+
+  static Metadata makeFromCreateGameDto(NewGameDto dto) {
+    Metadata metadata = new Metadata(dto.name());
+    metadata.setOwner(dto.owner());
+    metadata.addAllParticipants(dto.participants());
+    metadata.setId(UUID.randomUUID());
+    return metadata;
+  }
 
   public Metadata(String name) {
     this.name = name;
+  }
+
+  Metadata(Metadata otherData) {
+    this.id = otherData.id;
+    this.owner = otherData.owner;
+    this.name = otherData.name;
+    this.participants.putAll(otherData.participants);
+    this.isDeleted = otherData.isDeleted;
   }
 
   public UUID getId() {
@@ -38,10 +53,6 @@ public class Metadata {
     return ImmutableList.copyOf(participants.values());
   }
 
-  public List<Action> getActions() {
-    return ImmutableList.copyOf(actions);
-  }
-
   public void setOwner(User owner) {
     this.owner = owner;
     participants.put(owner.getHandle(), owner);
@@ -51,8 +62,10 @@ public class Metadata {
     participants.put(user.getHandle(), user);
   }
 
-  public void addAction(Action action) {
-    actions.add(action);
+  public void addAllParticipants(Collection<User> users) {
+    for (var user : users) {
+      participants.put(user.getHandle(), user);
+    }
   }
 
   public void removeParticipant(String handle) {

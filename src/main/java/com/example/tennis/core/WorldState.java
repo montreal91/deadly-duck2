@@ -6,6 +6,10 @@ class WorldState {
   private int currentDay = 1;
   private int currentSeason = 1;
 
+  static WorldState makeFromCreateGameDto(NewGameDto dto) {
+    return new WorldState(dto.maxSeasons());
+  }
+
   WorldState(int maxSeasons) {
     this.maxSeasons = maxSeasons;
   }
