@@ -1,6 +1,7 @@
-package com.example.tennis.webapi;
+package com.example.chaos.webapi;
 
-import com.example.tennis.core.GameService;
+import com.example.chaos.core.GameService;
+import com.example.chaos.core.queries.MetaGameQueries;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -10,9 +11,9 @@ import java.util.stream.Collectors;
 
 
 @RestController
-@RequestMapping("game/tennis")
+@RequestMapping("game/chaos")
 public class QueriesController {
-  private final GameService gameService;
+  private final MetaGameQueries gameService;
 
   public QueriesController(GameService gameService) {
     this.gameService = gameService;
@@ -20,10 +21,9 @@ public class QueriesController {
 
   @GetMapping("/game/all/")
   List<GameListViewDto> getAllGamesForOwner(String ownerHandle) {
-    return gameService
-        .getGamesForOwner(ownerHandle)
-        .stream()
-        .map(GameListViewDto::makeFromGame)
-        .collect(Collectors.toList());
+    return gameService.getGamesForOwner(ownerHandle)
+                      .stream()
+                      .map(GameListViewDto::makeFromGame)
+                      .collect(Collectors.toList());
   }
 }

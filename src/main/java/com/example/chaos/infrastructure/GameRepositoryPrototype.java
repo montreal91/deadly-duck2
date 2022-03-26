@@ -1,8 +1,8 @@
-package com.example.tennis.infrastructure;
+package com.example.chaos.infrastructure;
 
-import com.example.tennis.core.Game;
-import com.example.tennis.core.GameRepository;
-import com.example.tennis.core.Metadata;
+import com.example.chaos.core.Game;
+import com.example.chaos.core.GameRepository;
+import com.example.chaos.core.Metadata;
 import com.google.common.collect.ImmutableList;
 
 import java.util.Collections;
@@ -20,9 +20,11 @@ public class GameRepositoryPrototype implements GameRepository {
   public void saveGame(Game game) {
     Metadata gameMetadata = game.getMetadata();
     String ownerHandle = gameMetadata.getOwner().getHandle();
+
     if (!storage.containsKey(ownerHandle)) {
       storage.put(ownerHandle, new HashMap<>());
     }
+
     storage.get(ownerHandle).put(gameMetadata.getName(), game);
   }
 
@@ -36,6 +38,7 @@ public class GameRepositoryPrototype implements GameRepository {
     if (storage.containsKey(userHandle)) {
       return ImmutableList.copyOf(storage.get(userHandle).values());
     }
+
     return Collections.emptyList();
   }
 
@@ -46,6 +49,7 @@ public class GameRepositoryPrototype implements GameRepository {
     if (storage.containsKey(ownerHandle)) {
       return Optional.ofNullable(storage.get(ownerHandle).get(gameName));
     }
+
     return Optional.empty();
   }
 }

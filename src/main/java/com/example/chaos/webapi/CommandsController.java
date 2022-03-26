@@ -1,7 +1,7 @@
-package com.example.tennis.webapi;
+package com.example.chaos.webapi;
 
-import com.example.tennis.core.GameService;
-import com.example.tennis.core.NewGameDto;
+import com.example.chaos.core.commands.MetaGameCommands;
+import com.example.chaos.core.commands.NewGameData;
 import com.example.user.core.User;
 import com.google.common.collect.ImmutableSet;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,25 +14,25 @@ import java.util.stream.Collectors;
 
 
 @RestController
-@RequestMapping("game/tennis")
+@RequestMapping("game/chaos")
 public class CommandsController {
-  private final GameService gameService;
+  private final MetaGameCommands gameService;
 
-  public CommandsController(GameService gameService) {
+  public CommandsController(MetaGameCommands gameService) {
     this.gameService = gameService;
   }
 
   @PostMapping(value = "/new/game/", consumes={"application/json"})
   @ResponseBody
   public String createNewGame(@RequestBody NewGameInputDto newGameDto) {
-    gameService.createGame(new NewGameDto(
+    gameService.createGame(new NewGameData(
         newGameDto.name(),
         new User(newGameDto.ownerHandle()),
         ImmutableSet.copyOf(
             newGameDto.participants()
-                .stream()
-                .map(User::new)
-                .collect(Collectors.toList())
+                      .stream()
+                      .map(User::new)
+                      .collect(Collectors.toList())
         ),
         newGameDto.maxSeasons()
     ));

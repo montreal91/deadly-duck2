@@ -1,5 +1,6 @@
-package com.example.tennis.core;
+package com.example.chaos.core;
 
+import com.example.chaos.core.commands.NewGameData;
 import com.example.user.core.User;
 import com.google.common.collect.ImmutableList;
 
@@ -17,7 +18,7 @@ public class Metadata {
   private final Map<String, User> participants = new HashMap<>();
   private boolean isDeleted = false;
 
-  static Metadata makeFromCreateGameDto(NewGameDto dto) {
+  static Metadata makeFromCreateGameDto(NewGameData dto) {
     Metadata metadata = new Metadata(dto.name());
     metadata.setOwner(dto.owner());
     metadata.addAllParticipants(dto.participants());

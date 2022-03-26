@@ -1,4 +1,4 @@
-package com.example.tennis.core;
+package com.example.chaos.core;
 
 import java.util.UUID;
 

@@ -1,13 +1,13 @@
-package com.example.tennis;
+package com.example.chaos;
 
-import com.example.tennis.core.GameRepository;
-import com.example.tennis.core.GameService;
-import com.example.tennis.infrastructure.GameRepositoryPrototype;
+import com.example.chaos.core.GameRepository;
+import com.example.chaos.core.GameService;
+import com.example.chaos.infrastructure.GameRepositoryPrototype;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class Config {
+class Config {
   @Bean
   GameRepository gameRepository() {
     return new GameRepositoryPrototype();
