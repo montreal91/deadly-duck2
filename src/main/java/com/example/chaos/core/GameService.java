@@ -1,10 +1,9 @@
 package com.example.chaos.core;
 
-import com.example.chaos.core.commands.Action;
-import com.example.chaos.core.commands.ActionResult;
 import com.example.chaos.core.commands.GameInfo;
 import com.example.chaos.core.commands.GameManagementCommands;
 import com.example.chaos.core.commands.NewGameData;
+import com.example.chaos.core.commands.UserInfo;
 import com.example.chaos.core.queries.GameMetaData;
 import com.example.chaos.core.queries.MetaGameQueries;
 import com.example.user.core.User;
@@ -12,12 +11,10 @@ import com.example.user.core.User;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 
 public final class GameService
     implements GameManagementCommands, MetaGameQueries {
-//  private final Map<UUID, Game> activeGames = new HashMap<>();
   private final GameRepository gameRepository;
   private final GameServer server;
 
@@ -33,9 +30,13 @@ public final class GameService
   }
 
   @Override
-  public void loadGame(GameInfo gameInfo) {
+  public void loadGame(UserInfo userInfo, GameInfo gameInfo) {
     Optional<Game> game = gameRepository.getGameByUuid(gameInfo.id());
-    game.ifPresent(server::addGame);
+    game.ifPresent(gameObj -> {
+      if (gameObj.isOwnedBy(userInfo)) {
+        server.addGame(gameObj);
+      }
+    });
   }
 
   @Override
@@ -45,13 +46,26 @@ public final class GameService
   }
 
   @Override
+  public void startGame(UserInfo userInfo, GameInfo gameInfo) {
+    Optional<Game> game = server.getGame(gameInfo);
+    game.ifPresent(gameObj -> {
+      if (gameObj.isOwnedBy(userInfo)) {
+        server.runGame(gameInfo);
+      }
+    });
+  }
+
+  @Override
   public void deleteGame(GameInfo gameInfo) {
-//    Optional<Game> game = gameRepository.getGameByUuid(gameInfo.id());
-//    game.ifPresent(value -> {
-//      activeGames.remove(gameInfo);
-//      value.metadata.delete();
-//      gameRepository.saveGame(value);
-//    });
+    Optional<Game> activeGame = server.remove(gameInfo);
+    activeGame.ifPresent(this::deleteGame);
+
+    if (activeGame.isPresent()) {
+      return;
+    }
+
+    Optional<Game> game = gameRepository.getGameByUuid(gameInfo.id());
+    game.ifPresent(this::deleteGame);
   }
 
   @Override
@@ -67,15 +81,20 @@ public final class GameService
     return Collections.emptyList();
   }
 
+  private void deleteGame(Game game) {
+    game.metadata.delete();
+    gameRepository.saveGame(game);
+  }
+
   private static GameMetaData gameToData(Game game) {
     Metadata md = game.getMetadata();
     List<String> participants = md.getParticipants()
                                   .stream()
-                                  .map(User::getHandle)
+                                  .map(UserInfo::name)
                                   .toList();
     return new GameMetaData(
         md.getId(),
-        md.getOwner().getHandle(),
+        md.getOwner().name(),
         md.getName(),
         participants,
         md.isDeleted(),

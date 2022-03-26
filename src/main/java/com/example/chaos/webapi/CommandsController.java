@@ -1,14 +1,11 @@
 package com.example.chaos.webapi;
 
+import com.example.chaos.core.commands.GameInfo;
 import com.example.chaos.core.commands.GameManagementCommands;
 import com.example.chaos.core.commands.NewGameData;
-import com.example.user.core.User;
+import com.example.chaos.core.commands.UserInfo;
 import com.google.common.collect.ImmutableSet;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.stream.Collectors;
 
@@ -16,26 +13,43 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("game/chaos")
 public class CommandsController {
-  private final GameManagementCommands gameService;
+  private final GameManagementCommands managementCommands;
 
   public CommandsController(GameManagementCommands gameService) {
-    this.gameService = gameService;
+    this.managementCommands = gameService;
   }
 
   @PostMapping(value = "/new/game/", consumes={"application/json"})
   @ResponseBody
   public String createNewGame(@RequestBody NewGameInputDto newGameDto) {
-    gameService.createGame(new NewGameData(
+    managementCommands.createGame(new NewGameData(
         newGameDto.name(),
-        new User(newGameDto.ownerHandle()),
+        new UserInfo(newGameDto.owner()),
         ImmutableSet.copyOf(
             newGameDto.participants()
                       .stream()
-                      .map(User::new)
+                      .map(UserInfo::new)
                       .collect(Collectors.toList())
-        ),
-        newGameDto.maxSeasons()
+        )
     ));
+    return "OK";
+  }
+
+  @PostMapping(value = "/start/game/", consumes={"application/json"})
+  public String startGame(@RequestBody StartGameInputDto startGameDto) {
+    managementCommands.startGame(
+        new UserInfo(startGameDto.ownerName()),
+        new GameInfo(null, startGameDto.gameName())
+    );
+    return "OK";
+  }
+
+  @PostMapping(value = "/load/game/", consumes={"application/json"})
+  public String loadGame(@RequestBody StartGameInputDto startGameDto) {
+    managementCommands.loadGame(
+        new UserInfo(startGameDto.ownerName()),
+        new GameInfo(null, startGameDto.gameName())
+    );
     return "OK";
   }
 }

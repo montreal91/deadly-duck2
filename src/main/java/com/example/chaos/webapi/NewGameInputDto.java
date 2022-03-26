@@ -4,7 +4,6 @@ import java.util.Set;
 
 public record NewGameInputDto(
     String name,
-    String ownerHandle,
-    Set<String> participants,
-    int maxSeasons
+    String owner,
+    Set<String> participants
 ) {}

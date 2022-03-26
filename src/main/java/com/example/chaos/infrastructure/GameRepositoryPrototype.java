@@ -19,7 +19,7 @@ public class GameRepositoryPrototype implements GameRepository {
   @Override
   public void saveGame(Game game) {
     Metadata gameMetadata = game.getMetadata();
-    String ownerHandle = gameMetadata.getOwner().getHandle();
+    String ownerHandle = gameMetadata.getOwner().name();
 
     if (!storage.containsKey(ownerHandle)) {
       storage.put(ownerHandle, new HashMap<>());

@@ -3,6 +3,7 @@ package com.example.chaos.core;
 import com.example.chaos.core.commands.Action;
 import com.example.chaos.core.commands.ActionResult;
 import com.example.chaos.core.commands.NewGameData;
+import com.example.chaos.core.commands.UserInfo;
 import com.example.chaos.core.queries.WorldInfo;
 
 public class Game {
@@ -31,5 +32,9 @@ public class Game {
 
   WorldInfo getWorldInfo() {
     return world.getWorldInfo();
+  }
+
+  boolean isOwnedBy(UserInfo info) {
+    return metadata.getOwner().name().equals(info.name());
   }
 }

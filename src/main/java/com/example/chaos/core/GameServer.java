@@ -10,6 +10,7 @@ public interface GameServer {
   void addGame(Game game);
   void runGame(GameInfo gameInfo);
   Optional<Game> remove(GameInfo gameInfo);
+  Optional<Game> getGame(GameInfo gameInfo);
 
   void pushAction(GameInfo gameInfo, UserInfo userInfo, Action action);
 }

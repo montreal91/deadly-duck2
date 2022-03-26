@@ -1,8 +1,7 @@
 package com.example.chaos.core;
 
 import com.example.chaos.core.commands.NewGameData;
-import com.example.user.core.User;
-import com.google.common.collect.ImmutableList;
+import com.example.chaos.core.commands.UserInfo;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -13,9 +12,9 @@ import java.util.UUID;
 
 public class Metadata {
   private UUID id;
-  private User owner;
+  private UserInfo owner;
   private final String name;
-  private final Map<String, User> participants = new HashMap<>();
+  private final Map<String, UserInfo> participants = new HashMap<>();
   private boolean isDeleted = false;
 
   static Metadata makeFromCreateGameDto(NewGameData dto) {
@@ -46,26 +45,26 @@ public class Metadata {
     this.id = id;
   }
 
-  public User getOwner() {
+  public UserInfo getOwner() {
     return owner;
   }
 
-  public List<User> getParticipants() {
-    return ImmutableList.copyOf(participants.values());
+  public List<UserInfo> getParticipants() {
+    return List.copyOf(participants.values());
   }
 
-  public void setOwner(User owner) {
+  public void setOwner(UserInfo owner) {
     this.owner = owner;
-    participants.put(owner.getHandle(), owner);
+    participants.put(owner.name(), owner);
   }
 
-  public void addParticipant(User user) {
-    participants.put(user.getHandle(), user);
+  public void addParticipant(UserInfo user) {
+    participants.put(user.name(), user);
   }
 
-  public void addAllParticipants(Collection<User> users) {
+  public void addAllParticipants(Collection<UserInfo> users) {
     for (var user : users) {
-      participants.put(user.getHandle(), user);
+      participants.put(user.name(), user);
     }
   }
 

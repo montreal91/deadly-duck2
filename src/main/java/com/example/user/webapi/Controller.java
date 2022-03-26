@@ -27,8 +27,8 @@ public class Controller {
   @GetMapping("/list/")
   public List<ListUserDto> getAllUsers() {
     return userService.getActiveUsers()
-        .stream()
-        .map(ListUserDto::fromEntity)
-        .collect(Collectors.toList());
+                      .stream()
+                      .map(ListUserDto::fromEntity)
+                      .collect(Collectors.toList());
   }
 }
