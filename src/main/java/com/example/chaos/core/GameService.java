@@ -1,25 +1,29 @@
 package com.example.chaos.core;
 
-import com.example.chaos.core.commands.MetaGameCommands;
+import com.example.chaos.core.commands.Action;
+import com.example.chaos.core.commands.ActionResult;
+import com.example.chaos.core.commands.GameInfo;
+import com.example.chaos.core.commands.GameManagementCommands;
 import com.example.chaos.core.commands.NewGameData;
 import com.example.chaos.core.queries.GameMetaData;
 import com.example.chaos.core.queries.MetaGameQueries;
 import com.example.user.core.User;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
 
-public class GameService implements MetaGameCommands, MetaGameQueries {
-  private final Map<UUID, Game> activeGames = new HashMap<>();
+public final class GameService
+    implements GameManagementCommands, MetaGameQueries {
+//  private final Map<UUID, Game> activeGames = new HashMap<>();
   private final GameRepository gameRepository;
+  private final GameServer server;
 
-  public GameService(GameRepository gameRepository) {
+  public GameService(GameRepository gameRepository, GameServer server) {
     this.gameRepository = gameRepository;
+    this.server = server;
   }
 
   @Override
@@ -29,32 +33,25 @@ public class GameService implements MetaGameCommands, MetaGameQueries {
   }
 
   @Override
-  public void loadGame(UUID gameUuid) {
-    Optional<Game> game = gameRepository.getGameByUuid(gameUuid);
-    game.ifPresent(value -> activeGames.put(value.metadata.getId(), value));
+  public void loadGame(GameInfo gameInfo) {
+    Optional<Game> game = gameRepository.getGameByUuid(gameInfo.id());
+    game.ifPresent(server::addGame);
   }
 
   @Override
-  public void exitGame(UUID gameUid) {
-    Optional<Game> possiblyGame = Optional.ofNullable(activeGames.get(gameUid));
+  public void exitGame(GameInfo gameInfo) {
+    Optional<Game> possiblyGame = server.remove(gameInfo);
     possiblyGame.ifPresent(gameRepository::saveGame);
   }
 
   @Override
-  public void deleteGame(UUID gameId) {
-    Optional<Game> game = gameRepository.getGameByUuid(gameId);
-    game.ifPresent(value -> {
-      activeGames.remove(gameId);
-      value.metadata.delete();
-      gameRepository.saveGame(value);
-    });
-  }
-
-  public ActionResult makeAction(Action action) {
-    if (!activeGames.containsKey(action.gameUuid)) {
-      return new ActionResult(false);
-    }
-    return activeGames.get(action.gameUuid).acceptAction(action);
+  public void deleteGame(GameInfo gameInfo) {
+//    Optional<Game> game = gameRepository.getGameByUuid(gameInfo.id());
+//    game.ifPresent(value -> {
+//      activeGames.remove(gameInfo);
+//      value.metadata.delete();
+//      gameRepository.saveGame(value);
+//    });
   }
 
   @Override

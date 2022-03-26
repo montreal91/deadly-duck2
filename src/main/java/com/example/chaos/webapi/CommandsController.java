@@ -1,6 +1,6 @@
 package com.example.chaos.webapi;
 
-import com.example.chaos.core.commands.MetaGameCommands;
+import com.example.chaos.core.commands.GameManagementCommands;
 import com.example.chaos.core.commands.NewGameData;
 import com.example.user.core.User;
 import com.google.common.collect.ImmutableSet;
@@ -16,9 +16,9 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("game/chaos")
 public class CommandsController {
-  private final MetaGameCommands gameService;
+  private final GameManagementCommands gameService;
 
-  public CommandsController(MetaGameCommands gameService) {
+  public CommandsController(GameManagementCommands gameService) {
     this.gameService = gameService;
   }
 
