@@ -1,23 +1,21 @@
-package com.zwartzon.user.infrastructure;
+package com.zwartzon.domain.user.infrastructure;
 
-import com.zwartzon.user.core.User;
-import com.zwartzon.user.core.UserRepository;
+import com.zwartzon.domain.user.core.model.User;
+import com.zwartzon.domain.user.core.ports.outgoing.UserRepository;
 import com.google.common.collect.ImmutableList;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 
-public class BadUserRepository implements UserRepository {
+public class InMemoryUserRepository implements UserRepository {
   private static final Map<String, User> users = createUsers();
 
   @Override
-  public User getUserByHandle(String handle) {
-    if (users.containsKey(handle)) {
-      return users.get(handle);
-    }
-    throw new RuntimeException("No user with handle '" + handle + "' found");
+  public Optional<User> getUserByHandle(String handle) {
+    return Optional.ofNullable(users.get(handle));
   }
 
   @Override
