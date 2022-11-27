@@ -1,0 +1,27 @@
+syntax = "proto3";
+option java_multiple_files = true;
+package com.zwartzon.api.grpc;
+
+message Empty {}
+
+message GetUserRequest {
+  string handle = 1;
+}
+
+message UserListView {
+  string handle = 1;
+}
+
+message GetUserByHandleResponse {
+  string handle = 1;
+  string description = 2;
+}
+
+message GetUsersResponse {
+  repeated UserListView items = 1;
+}
+
+service GatewayApiService {
+  rpc getAllUsers(Empty) returns (stream GetUsersResponse);
+  rpc getUserByHandle(GetUserRequest) returns (GetUserByHandleResponse);
+}
