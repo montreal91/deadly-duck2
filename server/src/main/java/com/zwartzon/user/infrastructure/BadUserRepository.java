@@ -1,7 +1,7 @@
-package com.example.user.infrastructure;
+package com.zwartzon.user.infrastructure;
 
-import com.example.user.core.User;
-import com.example.user.core.UserRepository;
+import com.zwartzon.user.core.User;
+import com.zwartzon.user.core.UserRepository;
 import com.google.common.collect.ImmutableList;
 
 import java.util.HashMap;

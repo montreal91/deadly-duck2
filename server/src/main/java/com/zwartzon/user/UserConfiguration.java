@@ -1,8 +1,8 @@
-package com.example.user;
+package com.zwartzon.user;
 
-import com.example.user.core.UserRepository;
-import com.example.user.core.UserService;
-import com.example.user.infrastructure.BadUserRepository;
+import com.zwartzon.user.core.UserRepository;
+import com.zwartzon.user.core.UserService;
+import com.zwartzon.user.infrastructure.BadUserRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

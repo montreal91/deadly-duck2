@@ -1,4 +1,4 @@
-package com.example.user.core;
+package com.zwartzon.user.core;
 
 import java.util.List;
 

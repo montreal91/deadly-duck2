@@ -1,6 +1,6 @@
-package com.example.user.webapi;
+package com.zwartzon.user.webapi;
 
-import com.example.user.core.User;
+import com.zwartzon.user.core.User;
 
 
 public class ListUserDto {

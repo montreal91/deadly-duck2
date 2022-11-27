@@ -1,4 +1,4 @@
-package com.example.user.core;
+package com.zwartzon.user.core;
 
 public class User {
   private final String handle;
