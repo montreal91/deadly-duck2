@@ -1,67 +1,51 @@
 
-pub mod grpc {
-    tonic::include_proto!("com.zwartzon.api.grpc");
-}
+mod protogen;
 
-use grpc::gateway_api_service_client::GatewayApiServiceClient;
-use grpc::{
-    Empty,
-    UserListView
-};
-use tonic::Request;
-use tonic::transport::Channel;
+use futures::executor;
+use grpc::ClientStubExt;
+use grpc::StreamingResponse;
 
-const GRPC_ADDRESS: &str = "http://localhost:8080";
+use protogen::InputGatewayApi::{Empty, UserListView, GetUsersResponse};
+use protogen::InputGatewayApi_grpc::GatewayApiServiceClient;
 
 
-async fn create_grpc_client() -> GatewayApiServiceClient<Channel> {
-    let channel = Channel::from_static(GRPC_ADDRESS)
-        .connect()
-        .await
-        .expect("Can't create a channel.");
+const GRPC_HOST: &str = "localhost";
+const GRPC_PORT: u16 = 8080;
 
-    GatewayApiServiceClient::new(channel)
-}
 
-async fn get_all_users(grpc_client: &mut GatewayApiServiceClient<Channel>) -> Vec<UserListView> {
-    let response = grpc_client.get_all_users(Request::new(Empty {})).await;
-    let mut result: Vec<UserListView> = Vec::new();
+fn collect_user_views(response: StreamingResponse<GetUsersResponse>) -> Vec<UserListView> {
+    let response_result = executor::block_on(response.collect());
 
-    match response {
-        Ok(response) => {
-            println!("Ok response.");
-            let mut users_stream = response.into_inner();
+    let mut result = Vec::new();
 
-            while let Some(users_response) = users_stream.message().await.expect("Can't get a user") {
-                for user in users_response.items {
-                    result.push(user);
-                }
+    match response_result {
+        Ok(users) => {
+            let users_vector = users.1.get(0).unwrap();
+
+            for user in users_vector.items.iter() {
+                result.push(user.clone());
             }
         }
-        Err(e) => {
-            println!("There was an error while handling users: {}", e);
-        }
-    };
 
+        Err(e) => {
+            panic!("There was an error while handling users: {}", e);
+        }
+    }
     result
 }
 
-async fn users_future() -> Vec<UserListView> {
-    let mut grpc_client = create_grpc_client().await;
-    get_all_users(&mut grpc_client).await
-}
+fn main() {
+    let client = GatewayApiServiceClient::new_plain(
+        GRPC_HOST,
+        GRPC_PORT,
+        Default::default()
+    ).unwrap();
 
+    let user_views = collect_user_views(client.get_all_users(
+        grpc::RequestOptions::new(), Empty::new()
+    ));
 
-#[tokio::main]
-async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    println!("Hello, world!");
-
-    let users = users_future().await;
-
-    println!("Found users: ");
-    for user in users {
-        println!("{}", user.handle);
+    for user in user_views {
+        println!("User handle: {}", user.get_handle());
     }
-
-    Ok(())
 }

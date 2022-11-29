@@ -1,7 +1,9 @@
 
-fn main() -> Result<(), Box<dyn std::error::Error>> {
-    tonic_build::configure()
-        .build_server(false)
-        .compile(&["proto/InputGatewayApi.proto"], &["proto"])?;
-    Ok(())
+fn main() {
+    protoc_rust_grpc::Codegen::new()
+        .out_dir("src/protogen")
+        .input("proto/InputGatewayApi.proto")
+        .rust_protobuf(true)
+        .run()
+        .expect("Error Compilig protocol buffer.");
 }
